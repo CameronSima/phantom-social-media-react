@@ -1,0 +1,26 @@
+.post {
+    margin: 10px 0px 10px 0px;
+}
+
+.inline-text-item {
+    display: inline-block;
+    margin: 0px 1px 0px 1px;
+}
+
+.vote-widget {
+    text-align: center;
+}
+
+.card {
+    border-radius: 0;
+}
+
+.card-footer {
+    background-color: inherit;
+    border: none;
+}
+
+.card-header {
+    background-color: inherit;
+    border: none;
+}

@@ -1,0 +1,22 @@
+.comment-tools {
+    height: 40px;
+    width: 100%;
+}
+
+.threadline {
+    display: block;
+    height: 100%;
+    width: 50%;
+    border-left: 2px solid rgb(237, 239, 241);
+}
+
+.comment-container {
+    margin: 5px;
+    padding: 2px;
+    margin-bottom: 10px;
+    width: 450px;
+}
+
+.comment-body > p {
+    margin: 0.2rem 0rem 0.2rem 0rem;
+}
