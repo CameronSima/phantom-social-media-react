@@ -15,6 +15,7 @@ export const SUBMIT_NEW_POST = 'SUBMIT_NEW_POST';
 export const UPVOTE_POST = 'UPVOTE_POST';
 export const DOWNVOTE_POST = 'DOWNVOTE_POST';
 export const LOAD_POST = 'LOAD_POST';
+export const LOAD_POST_ERROR = 'LOAD_POST_ERROR';
 
 // Comment
 export const SAVE_COMMENT = 'SAVE_COMMENT';

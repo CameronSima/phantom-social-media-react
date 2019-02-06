@@ -1,43 +1,44 @@
 import React, { PureComponent, Fragment } from 'react';
+import { connect } from 'react-redux';
 import PostDetail from './PostDetail';
 import SideBar from '../../Sidebar/Sidebar';
 import Api from '../../../utils/api';
+import { loadPost } from '../../../redux/actions/Post';
 import { BrowserRouter as Router, Route, Link, match } from "react-router-dom";
 
 const Page = ({ post }) => (
-    <Fragment>
-      <PostDetail {...post} />
-      <SideBar {...post} />
-    </Fragment>
-  )
-  
-  export default class PostDetailPage extends PureComponent {
-  
-    state = {
-      post: {}
-    }
-  
-    componentDidMount() {
-      this.getPostData();
-    }
-  
-    getPostData = async () => {
-      const id = this.props.match.params.postID;
+  <Fragment>
+    <PostDetail post={post} />
+    <SideBar {...post} />
+  </Fragment>
+)
 
-      const url = 'http://localhost:8000/posts/' + id + '/';
-      const response = await Api.get(url, false);
-      this.setState({ 
-        post: response.data 
-      });
-    }
-  
-    render() {
+class PostDetailPage extends PureComponent {
 
-      console.log("POST DTAIL", this.props)
-      return (
-        <Page
-          post={this.state.post}
-        />
-      )
-    }
+  componentDidMount() {
+    const id = this.props.match.params.postID;
+    this.props.loadPost(id);
   }
+
+  render() {
+    return (
+      <Page
+        post={this.props.currentPost}
+      />
+    )
+  }
+}
+
+const mapStateToProps = state => ({
+  currentPost: state.CurrentPost
+});
+
+const mapDispatchToProps = dispatch => ({
+  loadPost: async id => {
+    const res = await loadPost(id);
+    res(dispatch);
+  },
+});
+
+PostDetailPage = connect(mapStateToProps, mapDispatchToProps)(PostDetailPage);
+export default PostDetailPage;

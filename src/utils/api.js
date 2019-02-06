@@ -4,7 +4,7 @@ class Api {
     baseUrl = 'http://localhost:8000';
     client = axios.create({
         baseURL: 'http://localhost:8000',
-        timeout: 5000,
+        // timeout: 15000,
         headers: {
             'Accept': 'application/json',
             'Content-Type': 'application/json'

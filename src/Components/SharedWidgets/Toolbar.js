@@ -57,6 +57,7 @@ export const CommentToolBar = props => {
         <ToolBar
             {...props}
             commentIconText="Reply"
+            commentIconHandler={props.commentIconHandler}
         />
     )
 }
@@ -71,16 +72,18 @@ export const PostToolbar = props => {
     )
 }
 
-export const ToolBar = ({ commentIconText, isSaved, save, unsave, id }) => (
+export const ToolBar = ({ commentIconHandler, commentIconText, isSaved, save, unsave, id }) => (
     <div>
         <MobileVoteWidget />
 
         <div className="inline-widget-item">
             <div className="inline-widget-item">
-                <CommentsIcon />
+                <CommentsIcon
+                    commentIconHandler={commentIconHandler}
+                />
             </div>
             <div className="inline-widget-item">
-                <small className="text-muted">{commentIconText}</small>
+                <small onClick={commentIconHandler} className="text-muted">{commentIconText}</small>
             </div>
         </div>
 

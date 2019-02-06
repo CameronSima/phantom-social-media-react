@@ -56,17 +56,17 @@ class App extends PureComponent {
         .then(props.fetchPopularFeed)
     }
 
-    // set up a timer to refresh data regularly.
-    if (props.user.isLoggedIn && !this.state.timerStarted) {
+    // // set up a timer to refresh data regularly.
+    // if (props.user.isLoggedIn && !this.state.timerStarted) {
 
-      console.log("SET TIMER")
+
       
-      this.setState({
-        timerStarted: true
-      }, () => {
-        setInterval(props.fetchPopularFeed, 10000)
-      })
-    }
+    //   // this.setState({
+    //   //   timerStarted: true
+    //   // }, () => {
+    //   //   setInterval(props.fetchPopularFeed, 60000)
+    //   // })
+    // }
   }
 
   componentDidMount() {

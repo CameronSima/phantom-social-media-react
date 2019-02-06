@@ -64,7 +64,8 @@ let Post = (props) => {
     } = props;
 
     return (
-        <div className="card post" key={'post_' + title}>
+        <div key={`post-${id}`}
+            className="card post" key={'post_' + title}>
             <div className="card-header">
 
                 <PostDetails

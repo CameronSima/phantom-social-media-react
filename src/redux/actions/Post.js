@@ -1,5 +1,37 @@
 import Api from '../../utils/api';
-import { SUBMIT_NEW_POST, SAVE_POST, UN_SAVE_POST, UPVOTE_POST, DOWNVOTE_POST } from '../ActionTypes';
+import { 
+    LOAD_POST, 
+    LOAD_POST_ERROR, 
+    SUBMIT_NEW_POST, 
+    SAVE_POST,
+    UN_SAVE_POST,
+    UPVOTE_POST, 
+    DOWNVOTE_POST 
+} from '../ActionTypes';
+
+export const loadPost = id => (
+    async dispatch => {
+        try {
+            const url = 'http://localhost:8000/posts/' + id + '/';
+            const response = await Api.get(url, false);
+        
+            if (response.status === 200) {
+                dispatch({
+                    type: LOAD_POST,
+                    payload: response.data
+                });
+            } else {
+                throw new Error(response.status_text)
+            }
+        } catch (err) {
+            dispatch({
+                type: LOAD_POST_ERROR,
+                payload: err
+            });
+        }
+    }
+)
+
 
 export const submitPost = async (post) => (
     async dispatch => {

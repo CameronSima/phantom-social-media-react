@@ -3,7 +3,8 @@ import React, { Fragment } from 'react';
 export default class CommentEntry extends React.PureComponent {
 
     state = {
-        comment: ""
+        comment: "",
+        hidden: true
     }
 
     enterComment = (e) => {
@@ -14,10 +15,16 @@ export default class CommentEntry extends React.PureComponent {
 
     render() {
         return (
-            <Fragment>
+            <div className="comment-entry-box">
                 <i className="fa fa-lock prefix grey-text" />
-                <textarea rows="4" placeholder="comment" onChange={this.enterComment} className="form-control" />
-            </Fragment>
+                <textarea 
+                    rows="4" 
+                    placeholder="comment" 
+                    hidden={true}
+                    onChange={this.enterComment} 
+                    className="form-control" />
+            </div>
+
         )
     }
 }

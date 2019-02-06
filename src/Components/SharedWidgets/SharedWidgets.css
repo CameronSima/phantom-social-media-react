@@ -1,4 +1,5 @@
 .inline-widget-item {
     display: inline-block;
     margin: 0px 3px 0px 3px;
+    cursor: pointer;
 }

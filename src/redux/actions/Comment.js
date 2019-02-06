@@ -1,78 +1,82 @@
 import Api from '../../utils/api';
 import { SUBMIT_NEW_COMMENT, UN_SAVE_COMMENT, SAVE_COMMENT, UPVOTE_COMMENT, DOWNVOTE_COMMENT } from '../ActionTypes';
 
-export const submitPost = async (post) => (
+export const submitComment = async (comment) => (
     async dispatch => {
         try {
-            const response = await Api.post('posts/', post);
+            const response = await Api.post('comments/', comment);
             console.log("RES", response)
-    
+
+            if (response.status === 201) {
                 dispatch({
                     type: SUBMIT_NEW_COMMENT,
                     payload: response.data
                 });
+            } else {
+                throw new Error(response.statusText);
+            }
         } catch (e) {
             console.log("THE ERR", e)
         }
     }
 )
 
-export const savePost = async (postId) => (
+export const saveComment = async (commentId) => (
     async dispatch => {
-        const response = await Api.get('comments/' + postId + '/save/');
+        const response = await Api.get('comments/' + commentId + '/save/');
     
         if (response.statusText === 'Accepted') {
             return dispatch({
                 type: SAVE_COMMENT,
-                payload: postId
+                payload: commentId
             })
         }
     }
 )
 
-export const unsavePost = async (postId) => (
+export const unsaveComment = async (commentId) => (
     async dispatch => {
-        const response = await Api.get('comments/' + postId + '/unsave/');
+        const response = await Api.get('comments/' + commentId + '/unsave/');
         if (response.statusText === 'Accepted') {
             return dispatch({
                 type: UN_SAVE_COMMENT,
-                payload: postId
+                payload: commentId
             })
         }
     }
 )
 
-export const upvote = async (postId) => (
+export const upvote = async (commentId) => (
     async dispatch => {
 
         dispatch({
-            type: UPVOTE_POST,
-            payload: postId
+            type: UPVOTE_COMMENT,
+            payload: commentId
         });
-        const response = await Api.get('comments/' + postId + '/upvote/');
+        const response = await Api.get('comments/' + commentId + '/upvote/');
         if (response.statusText === 'Accepted') {
             return dispatch({
                 type: UPVOTE_COMMENT,
-                payload: postId
+                payload: commentId
             })
         }
     }
 )
 
-export const downvote = async (postId) => (
+export const downvote = async (commentId) => (
     async dispatch => {
 
         dispatch({
-            type: DOWNVOTE_POST,
-            payload: postId
+            type: DOWNVOTE_COMMENT,
+            payload: commentId
         })
 
-        const response = await Api.get('comments/' + postId + '/downvote/');
+        const response = await Api.get('comments/' + commentId + '/downvote/');
         console.log(response)
         if (response.statusText === 'Accepted') {
             return dispatch({
                 type: DOWNVOTE_COMMENT,
-                payload: postId
+                payload: commentId
             })
         }
     }

@@ -10,7 +10,7 @@ import { CommentList } from '../../Comment/Comment';
 import Editor from '../../SharedWidgets/Editor';
 
 
-let PostDetail = post => {
+let PostDetail = ({ post, dispatch, user }) => {
   const {
     user_downvoted,
     user_upvoted,
@@ -75,10 +75,17 @@ let PostDetail = post => {
         </div>
       </div>
       
-      <CommentList comments={comments} />
+      <CommentList 
+        user={user}
+        dispatch={dispatch}
+        comments={comments} />
     </div>
   )
 }
+
+const mapStateToProps = state => ({
+  user: state.User
+});
 
 const mapDispatchToProps = dispatch => ({
   upvote: async (postId) => {
@@ -88,10 +95,12 @@ const mapDispatchToProps = dispatch => ({
   downvote: async (postId) => {
     const thunk = await downvote(postId);
     thunk(dispatch);
-  }
+  },
+  // pass down to Comment for comment actions
+  dispatch: dispatch
 });
 
-export default PostDetail = connect(null, mapDispatchToProps)(PostDetail)
+export default PostDetail = connect(mapStateToProps, mapDispatchToProps)(PostDetail)
 
 
 

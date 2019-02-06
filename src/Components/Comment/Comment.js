@@ -1,8 +1,9 @@
 import React, { PureComponent, Fragment } from 'react';
 import { CommentToolBar } from '../SharedWidgets/Toolbar';
+import { submitComment } from '../../redux/actions/Comment';
+import { flatCommentsToTree } from '../../utils/CommentTree';
 import moment from 'moment';
 import './Comment.css'
-
 
 const CommentDetails = ({ score, author, created }) => {
 
@@ -33,25 +34,6 @@ const CommentBody = ({ body_html }) => {
     )
 }
 
-const Comment = post => {
-    const { score, author, created, body_html } = post;
-
-    return (
-        <div className="comment-container">
-            <CommentDetails
-                score={score}
-                author={author}
-                created={created}
-            />
-            <CommentBody body_html={body_html} />
-            <CommentToolBar {...post} />
-            
-
-        </div>
-    )
-
-}
-
 const SortSelector = () => (
     <span>
         Sort by
@@ -76,86 +58,137 @@ const CommentToolbar = () => (
     </div>
 )
 
-const Replies = ({ children, depth }) => {
+const Replies = ({ user, dispatch, children, depth }) => {
     ++depth;
-    console.log("DEPzh", depth)
-    const margin = depth * 10;
+    const margin = 30;
     const classname = children.length > 1 ? "threadline" : ""
     return (
         children.map(comment =>
             <Fragment>
-        
-            <div className={classname} style={{marginLeft: margin + "px"}}>
-                <Comment {...comment} />
-                <Replies
-                    depth={depth}
-                    children={comment.children}
 
-                />
-            </div>
-         
+                <div className={classname} style={{ marginLeft: margin + "px" }}>
+                    <Comment
+                        comment={comment}
+                        dispatch={dispatch}
+                        user={user}
+
+                    />
+                    <Replies
+                        depth={depth}
+                        children={comment.children}
+                        dispatch={dispatch}
+
+                    />
+                </div>
+
             </Fragment>
         )
     )
 }
 
-const TopLevelComments = ({ comments }) => (
-    comments.map(topLevelComment =>
-        <div className="threadline">
-            <Comment
-                {...topLevelComment}
-            />
-            <Replies
-                depth={0}
-                children={topLevelComment.children}
-            />
+
+export const CommentList = ({ user, comments, dispatch }) => {
+
+    const nestedComments = flatCommentsToTree(comments);
+    return (
+        <div>
+            <CommentToolbar />
+            {
+                nestedComments.map(topLevelComment =>
+                    <div key={`comment-${topLevelComment.id}`}
+                        className="threadline">
+                        <Comment
+                            user={user}
+                            dispatch={dispatch}
+                            comment={topLevelComment}
+                        />
+                        <Replies
+                            depth={0}
+                            children={topLevelComment.children}
+                            dispatch={dispatch}
+                            user={user}
+                        />
+                    </div>
+                )
+            }
+
         </div>
     )
+}
+
+const CommentEntry = ({ enterComment, hidden, submit }) => (
+    <div className="comment-entry-box">
+        <i className="fa fa-lock prefix grey-text" />
+        <textarea
+            rows="4"
+            placeholder="comment"
+            hidden={hidden}
+            onChange={enterComment}
+            className="form-control" />
+        <button
+            onClick={submit}
+            hidden={hidden}
+            className="btn btn-success comment-reply-button">Reply</button>
+    </div>
 )
 
-export class CommentList extends PureComponent {
+export class Comment extends React.PureComponent {
 
-    toMap = comments => (
-        comments.reduce((acc, curr) => {
-            acc[curr.id] = curr;
-            acc[curr.id]['children'] = [];
-            return acc;
-        }, {})
-    )
+    state = {
+        commentEntryHidden: true,
+        commentReply: ''
+    }
 
-    buildCommentTree = () => {
-        let mappedComment;
-        let tree = [];
+    enterComment = (e) => {
+        this.setState({
+            commentReply: e.target.value
+        });
+    }
 
-        const comments = this.props.comments ? this.props.comments : [];
-        const map = this.toMap(comments);
+    toggleCommentEntry = () => {
+        this.setState({
+            commentEntryHidden: !this.state.commentEntryHidden,
+            commentReply: ''
+        });
+    }
 
-        for (let id in map) {
-            if (map.hasOwnProperty(id)) {
-                mappedComment = map[id];
-                if (mappedComment.parent) {
-                    map[mappedComment['parent']]['children'].push(mappedComment);
-                } else {
-                    tree.push(mappedComment);
-                }
-            }
-        }
-        return tree;
+    submitReply = async () => {
+        const { comment, user } = this.props;
+
+        const commentReply = {
+            post: comment.post,
+            parent: comment.id,
+            body_text: this.state.commentReply
+        };
+
+        this.toggleCommentEntry();
+
+        const thunk = await submitComment(commentReply);
+        return thunk(this.props.dispatch);
     }
 
     render() {
-        console.log("CO<MMMTRENTS")
-        console.log(this.props.comments)
-        console.log(this.buildCommentTree())
-        const nested = this.buildCommentTree();
-
-        console.log("NESTED", nested)
-
+        console.log("REPLY PROPSA")
+        console.log(this.props)
+        const { score, author, created, body_html } = this.props.comment;
         return (
-            <div>
-                <CommentToolbar />
-                <TopLevelComments comments={nested} />
+            <div className="comment-container">
+                <CommentDetails
+                    score={score}
+                    author={author}
+                    created={created}
+                />
+                <CommentBody body_html={body_html} />
+                <CommentToolBar
+                    commentIconHandler={this.toggleCommentEntry}
+                    {...this.props.comment} />
+                <CommentEntry
+                    submit={this.submitReply}
+                    enterComment={this.enterComment}
+                    hidden={this.state.commentEntryHidden}
+                />
             </div>
         )
     }
+
 }

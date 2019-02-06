@@ -20,3 +20,12 @@
 .comment-body > p {
     margin: 0.2rem 0rem 0.2rem 0rem;
 }
+
+.comment-entry-box {
+    margin: 15px;
+}
+
+.comment-entry-box .comment-reply-button {
+    margin: 8px;
+    float: right;
+}

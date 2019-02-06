@@ -25,9 +25,11 @@ export const Icon = (props) => {
     )
 }
 
-export const CommentsIcon = () => (
+export const CommentsIcon = ({ commentIconHandler }) => (
     <Icon
         child={commentSVG}
+        activateHandler={commentIconHandler}
+        deActivateHandler={commentIconHandler}
     />
 )
 
