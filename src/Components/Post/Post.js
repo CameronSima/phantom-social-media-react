@@ -27,12 +27,17 @@ export const PostDetails = ({ posted_in = { title: "Home" }, author = { username
                 <small>posted in</small>
             </div>
             <div className="inline-text-item">
-                {posted_in.title}
+                <Link to={`/subs/${posted_in.slug}/`}>
+                    {posted_in.title}
+                </Link>
             </div>
         </div>
         <div className="inline-text-item">
             <div className="inline-text-item">
-                <small>by {author.username}</small>
+                <small>by </small>
+                <Link to={`/users/${author.username}/`}>
+                    <small>{author.username}</small>
+                </Link>
             </div>
         </div>
         <div className="inline-text-item">
@@ -43,11 +48,11 @@ export const PostDetails = ({ posted_in = { title: "Home" }, author = { username
     </Fragment>
 )
 
-let Post = (props) => {
+let Post = post => {
     const {
         slug,
-        user_downvoted,
-        user_upvoted,
+        isDownvoted,
+        isUpvoted,
         link_preview_img,
         savePost,
         unsavePost,
@@ -61,7 +66,7 @@ let Post = (props) => {
         score = 0,
         num_comments = 0,
         url
-    } = props;
+    } = post;
 
     return (
         <div key={`post-${id}`}
@@ -79,11 +84,11 @@ let Post = (props) => {
 
                 <VoteWidget
                     score={score}
-                    upvoteHandler={() => { props.upvote(id) }}
-                    downVoteHandler={() => { props.downvote(id) }}
+                    upvoteHandler={() => { upvote(post) }}
+                    downVoteHandler={() => { downvote(post) }}
                 />
-    
-                <Link to={`/${posted_in.slug}/${slug}`}>
+
+                <Link to={`/subs/${posted_in.slug}/posts/${slug}`}>
                     <h5 className="card-title">{title}</h5>
                 </Link>
 
@@ -95,8 +100,8 @@ let Post = (props) => {
             <div className="card-footer">
 
                 <PostToolbar
-                    save={savePost}
-                    unsave={unsavePost}
+                    save={() => savePost(post)}
+                    unsave={() => unsavePost(post)}
                     isSaved={isSaved}
                     id={id}
                     num_comments={num_comments}
@@ -107,26 +112,30 @@ let Post = (props) => {
     )
 }
 
+const mapStateToProps = state => ({
+    user_account: state.User.account
+});
+
 const mapDispatchToProps = dispatch => ({
-    savePost: async (postId) => {
-        const res = await savePost(postId);
+    savePost: async post => {
+        const res = await savePost(post);
         res(dispatch);
-      },
-      unsavePost: async (postId) => {
-        const res = await unsavePost(postId);
+    },
+    unsavePost: async post => {
+        const res = await unsavePost(post);
         res(dispatch);
-      },
-    upvote: async (postId) => {
-        const thunk = await upvote(postId);
+    },
+    upvote: async post => {
+        const thunk = await upvote(post);
         thunk(dispatch);
     },
-    downvote: async (postId) => {
-        const thunk = await downvote(postId);
+    downvote: async post => {
+        const thunk = await downvote(post);
         thunk(dispatch);
     }
 });
 
-export default Post = connect(null, mapDispatchToProps)(Post)
+export default Post = connect(mapStateToProps, mapDispatchToProps)(Post)
 
 
 

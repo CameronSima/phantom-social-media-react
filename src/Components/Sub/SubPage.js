@@ -1,21 +1,18 @@
 import React from 'react';
 import { connect } from 'react-redux';
-import { loadSub } from '../../redux/actions/Sub';
+import { loadSub, loadSubPosts } from '../../redux/actions/Sub';
 import { PostListPage } from '../Post/PostListPage';
 
 class SubPage extends React.PureComponent {
 
     componentDidMount() {
-
-        // load cached data if we're navigating to the same sub as last time.
-        if (this.props.match.params.subID !== this.props.currentSub.id) {
-            this.props.loadSub(this.props.match.params.subID);
-        }
+        const subId = this.props.match.params.subID;
+        this.props.loadSub(subId);
     }
 
     render() {
         return (
-            <PostListPage { ...this.props.currentSub } />
+            <PostListPage {...this.props.currentSub} />
         )
     }
 }
@@ -25,12 +22,11 @@ const mapStateToProps = state => ({
 });
 
 const mapDispatchToProps = dispatch => ({
-loadSub: async id => {
-    const res = await loadSub(id);
-    res(dispatch);
-},
+    loadSub: async id => {
+        const res = await loadSub(id);
+        res(dispatch);
+    }
 });
-  
-  SubPage = connect(mapStateToProps, mapDispatchToProps)(SubPage);
-  export default SubPage;
-  
+
+SubPage = connect(mapStateToProps, mapDispatchToProps)(SubPage);
+export default SubPage;

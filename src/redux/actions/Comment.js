@@ -1,5 +1,61 @@
 import Api from '../../utils/api';
-import { SUBMIT_NEW_COMMENT, UN_SAVE_COMMENT, SAVE_COMMENT, UPVOTE_COMMENT, DOWNVOTE_COMMENT } from '../ActionTypes';
+import { 
+    SUBMIT_NEW_COMMENT, 
+    UN_SAVE_COMMENT, 
+    SAVE_COMMENT, 
+    UPVOTE_COMMENT, 
+    DOWNVOTE_COMMENT, 
+    LOAD_COMMENT_DESCENDANTS,
+     LOAD_COMMENT_DESCENDANTS_ERROR,
+     LOAD_MORE_COMMENTS,
+     LOAD_MORE_COMMENTS_ERROR
+    } from '../ActionTypes';
+
+export const loadMoreComments = nextCommentsUrl => (
+    async dispatch => {
+        try {
+            const response = await Api.get(nextCommentsUrl);
+            if (response.status === 200) {
+                dispatch({
+                    type: LOAD_MORE_COMMENTS,
+                    payload: response.data
+                })
+            } else {
+                throw new Error(response.status_text)
+            }
+        } catch (err) {
+            dispatch({
+                type: LOAD_MORE_COMMENTS_ERROR,
+                payload: err
+            });
+        }
+
+    }
+)
+
+export const loadDescendants = comment_id => (
+    async dispatch => {
+        try {
+            const url = 'http://localhost:8000/comments/?descendants_for=' + comment_id;
+            const response = await Api.get(url, false);
+
+            if (response.status === 200) {
+                dispatch({
+                    type: LOAD_COMMENT_DESCENDANTS,
+                    payload: response.data
+                });
+            } else {
+                throw new Error(response.status_text)
+            }
+        } catch (err) {
+            dispatch({
+                type: LOAD_COMMENT_DESCENDANTS_ERROR,
+                payload: err
+            });
+        }
+    }
+)
+
 
 export const submitComment = async (comment) => (
     async dispatch => {

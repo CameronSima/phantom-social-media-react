@@ -7,17 +7,13 @@ import { PostDetails, LinkPreviewImage } from '../Post';
 import { VoteWidget } from '../../SharedWidgets/Toolbar';
 import { PostToolbar } from '../../SharedWidgets/Toolbar';
 import { CommentList } from '../../Comment/Comment';
-import Editor from '../../SharedWidgets/Editor';
 
 
-let PostDetail = ({ post, dispatch, user }) => {
+let PostDetail = ({ post, dispatch, user, upvoteHandler, downvoteHandler }) => {
   const {
-    user_downvoted,
-    user_upvoted,
-    upvote, 
-    downvote,
     link_preview_img,
     savePost,
+    slug,
     unsavePost,
     isSaved,
     created,
@@ -31,8 +27,6 @@ let PostDetail = ({ post, dispatch, user }) => {
     num_comments = 0
   } = post;
 
-  console.log("POST DETSAIL PROPS")
-  console.log(post)
 
   return (
     <div className="col-md-8 post-list">
@@ -49,8 +43,8 @@ let PostDetail = ({ post, dispatch, user }) => {
         <div className="card-body">
           <VoteWidget
             score={score}
-            upvoteHandler={() => { upvote(id) }}
-            downVoteHandler={() => { downvote(id) }}
+            upvoteHandler={() => { upvoteHandler(post) }}
+            downVoteHandler={() => { downvoteHandler(post) }}
           />
           <h5 className="card-title">{title}</h5>
 
@@ -71,7 +65,7 @@ let PostDetail = ({ post, dispatch, user }) => {
 
           <br/>
           {/* <CommentEntry /> */}
-          <Editor />
+  
         </div>
       </div>
       
@@ -88,12 +82,12 @@ const mapStateToProps = state => ({
 });
 
 const mapDispatchToProps = dispatch => ({
-  upvote: async (postId) => {
-    const thunk = await upvote(postId);
+  upvoteHandler: async post => {
+    const thunk = await upvote(post);
     thunk(dispatch);
   },
-  downvote: async (postId) => {
-    const thunk = await downvote(postId);
+  downvoteHandler: async post => {
+    const thunk = await downvote(post);
     thunk(dispatch);
   },
   // pass down to Comment for comment actions

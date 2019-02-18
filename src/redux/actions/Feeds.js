@@ -8,16 +8,15 @@ export const fetchPopularFeed = async () => (
         dispatch({
             type: GET_POPULAR_FEED,
             payload: response.data
-        })
+        });
+        return response.data;
     }
 )
 
-export const fetchUserSubPostsFeed = async () => (
-    async dispatch => {
-        const response = await Api.get('subbed_posts');
-        dispatch({
-            type: GET_USERS_SUB_POSTS,
-            payload: response.data
-        })
+export const getFeed = async feedName => (
+    async (dispatch, getState) => {
+        if (getState().Feeds.hasOwnProperty(feedName)) {
+
+        }
     }
 )

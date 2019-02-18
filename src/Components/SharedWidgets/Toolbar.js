@@ -30,20 +30,22 @@ export const MobileVoteWidget = ({ upvoteHandler, downVoteHandler, score = 0 }) 
     </div>
 )
 
-export const VoteWidget = ({ upvoteHandler, downVoteHandler, score }) => (
+export const VoteWidget = ({ isDownvoted, isUpvoted, upvoteHandler, downVoteHandler, score }) => (
     <div className="vote-widget d-none d-sm-inline"
         style={{
             display: "inline-block",
             width: "30px",
-            float: "left"
+            float: "left",
+            cursor: "pointer"
+
         }}>
-        <div onClick={upvoteHandler}>
+        <div onClick={isUpvoted ? ()=>{} : upvoteHandler}>
             <img
                 style={{ width: "16px" }}
                 src={upVoteSVG} />
         </div>
         {score}
-        <div onClick={downVoteHandler}>
+        <div onClick={ isDownvoted ? ()=>{} : downVoteHandler}>
             <img
                 style={{ width: "16px" }}
                 src={downVoteSVG} />
@@ -55,7 +57,7 @@ export const VoteWidget = ({ upvoteHandler, downVoteHandler, score }) => (
 export const CommentToolBar = props => {
     return (
         <ToolBar
-            {...props}
+            { ...props }
             commentIconText="Reply"
             commentIconHandler={props.commentIconHandler}
         />
@@ -65,48 +67,52 @@ export const CommentToolBar = props => {
 export const PostToolbar = props => {
     const { num_comments } = props;
     return (
-        <ToolBar 
+        <ToolBar
             {...props}
-            commentIconText={num_comments} 
+            commentIconText={num_comments}
         />
     )
 }
 
-export const ToolBar = ({ commentIconHandler, commentIconText, isSaved, save, unsave, id }) => (
-    <div>
-        <MobileVoteWidget />
+export const ToolBar = props => {
+    const { commentIconHandler, commentIconText, isSaved, save, unsave, id } = props;
+    return (
+        <div>
+            <MobileVoteWidget />
 
-        <div className="inline-widget-item">
             <div className="inline-widget-item">
-                <CommentsIcon
-                    commentIconHandler={commentIconHandler}
-                />
+                <div className="inline-widget-item">
+                    <CommentsIcon
+                        commentIconHandler={commentIconHandler}
+                    />
+                </div>
+                <div className="inline-widget-item">
+                    <small onClick={commentIconHandler} className="text-muted">{commentIconText}</small>
+                </div>
             </div>
+
             <div className="inline-widget-item">
-                <small onClick={commentIconHandler} className="text-muted">{commentIconText}</small>
+                <div className="inline-widget-item">
+                    <SaveIcon
+                        isSaved={isSaved}
+                        unsave={unsave}
+                        save={save}
+                        postId={id} />
+                </div>
+                <div className="inline-widget-item">
+                    <small className="text-muted">{isSaved ? "Unsave" : "Save"}</small>
+                </div>
+            </div>
+
+            <div className="inline-widget-item">
+                <div className="inline-widget-item">
+                    <ShareIcon />
+                </div>
+                <div className="inline-widget-item">
+                    <small className="text-muted">Share</small>
+                </div>
             </div>
         </div>
+    )
 
-        <div className="inline-widget-item">
-            <div className="inline-widget-item">
-                <SaveIcon
-                    isSaved={isSaved}
-                    unsave={unsave}
-                    save={save}
-                    postId={id} />
-            </div>
-            <div className="inline-widget-item">
-                <small className="text-muted">{isSaved ? "Unsave" : "Save"}</small>
-            </div>
-        </div>
-
-        <div className="inline-widget-item">
-            <div className="inline-widget-item">
-                <ShareIcon />
-            </div>
-            <div className="inline-widget-item">
-                <small className="text-muted">Share</small>
-            </div>
-        </div>
-    </div>
-)
+}

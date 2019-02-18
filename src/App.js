@@ -2,17 +2,16 @@ import React, { PureComponent, Fragment } from 'react';
 import './App.css';
 import Api from './utils/api';
 import { Navbar } from './Components/Navbar/Navbar';
-import SideBar from './Components/Sidebar/Sidebar';
-import Post from './Components/Post/Post';
 import { PostListPage } from './Components/Post/PostListPage';
 import PostDetailPage from './Components/Post/PostDetailPage/PostDetailPage';
 import SubPage from './Components/Sub/SubPage';
 import NewPostModal from './Components/Post/NewPostModal/NewPostModal';
 import { connect } from 'react-redux';
-import { fetchPopularFeed } from './redux/actions/Feed';
+import { fetchPopularFeed } from './redux/actions/Feeds';
 import { getUserDataFromLocalStorage, fetchAccount } from './redux/actions/User';
 
-import { BrowserRouter as Router, Route, Link, match } from "react-router-dom";
+import { BrowserRouter as Router, Route, Switch, Link, match } from "react-router-dom";
+import { LOAD_FEED_INTO_CURRENT_VIEW } from './redux/ActionTypes';
 
 const Header = props => (
   <header className="App-header">
@@ -27,14 +26,14 @@ const SubAndPostDetailNestedRoutes = ({ match, props }) => (
       exact
       path={match.path}
       component={SubPage}
-      render={(match) => 
-        <SubPage { ...match } />
+      render={(match) =>
+        <SubPage {...match} />
       }
     />
     <Route
       path={`${match.url}/:postID`}
       render={(match) =>
-        <PostDetailPage { ...match } />
+        <PostDetailPage {...match} />
       }
     />
 
@@ -60,7 +59,7 @@ class App extends PureComponent {
     // if (props.user.isLoggedIn && !this.state.timerStarted) {
 
 
-      
+
     //   // this.setState({
     //   //   timerStarted: true
     //   // }, () => {
@@ -70,6 +69,7 @@ class App extends PureComponent {
   }
 
   componentDidMount() {
+    console.log("APP MOUNTED", this.props)
     this.props.getUserDataFromLocalStorage();
   }
 
@@ -87,24 +87,42 @@ class App extends PureComponent {
           </div>
 
           <div className="row">
+          <Switch>
             <Route
               path="/" exact
               render={(props) =>
                 <PostListPage
                   {...props}
-                  savedPosts={this.props.savedPosts}
-                  posts={this.props.popularFeed.results} />
+                  user={this.props.user}
+                  posts={this.props.currentFeed.results} />
               }
             />
+            <Route
+              exact
+              path="subs/:subSlug"
+              component={SubPage}
+              render={(match) =>
+                <SubPage {...match} />
+              }
+            />
+
+            <Route
+              exact
+              path="/subs/:subSlug/posts/:postSlug"
+              render={(match) =>
+                <PostDetailPage {...match} />
+              }
+            />
+            </Switch>
 
             {/* <Route
               path="/subs/:id"
               component={SubPage}
             /> */}
-            <Route
+            {/* <Route
               path="/:subID"
               component={SubAndPostDetailNestedRoutes}
-            />
+            /> */}
 
             {/* <Route
               path="/posts/:id"
@@ -119,7 +137,7 @@ class App extends PureComponent {
 }
 
 const mapStateToProps = state => ({
-  popularFeed: state.PopularFeed,
+  currentFeed: state.CurrentFeed,
   savedPosts: state.User.account.saved_posts,
   user: state.User
 });
@@ -134,7 +152,12 @@ const mapDispatchToProps = dispatch => ({
   },
   fetchPopularFeed: async () => {
     const res = await fetchPopularFeed();
-    res(dispatch)
+    const feedData = await res(dispatch);
+    console.log(feedData)
+    dispatch({
+      type: LOAD_FEED_INTO_CURRENT_VIEW,
+      payload: feedData
+    })
   },
 });
 

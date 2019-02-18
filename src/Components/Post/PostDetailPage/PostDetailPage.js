@@ -3,41 +3,50 @@ import { connect } from 'react-redux';
 import PostDetail from './PostDetail';
 import SideBar from '../../Sidebar/Sidebar';
 import Api from '../../../utils/api';
-import { loadPost } from '../../../redux/actions/Post';
+import { loadPost, loadPostComments } from '../../../redux/actions/Post';
 import { BrowserRouter as Router, Route, Link, match } from "react-router-dom";
 
-const Page = ({ post }) => (
-  <Fragment>
-    <PostDetail post={post} />
-    <SideBar {...post} />
-  </Fragment>
-)
+// const Page = ({ post }) => (
+//   <Fragment>
+//     <PostDetail post={post} />
+//     <SideBar {...post} />
+//   </Fragment>
+// )
 
 class PostDetailPage extends PureComponent {
 
+
   componentDidMount() {
-    const id = this.props.match.params.postID;
-    this.props.loadPost(id);
+    const { postSlug, subSlug } = this.props.match.params;
+
+
+    this.props.loadPost(postSlug);
+    this.props.loadPostComments(postSlug);
   }
 
   render() {
+    const post = this.props.currentPost;
+
+    console.log("POST", post)
+
     return (
-      <Page
-        post={this.props.currentPost}
-      />
+      <Fragment>
+        <PostDetail post={post} />
+        <SideBar {...post} />
+      </Fragment>
     )
   }
 }
 
 const mapStateToProps = state => ({
-  currentPost: state.CurrentPost
+  currentPost: state.CurrentPost,
+  currentFeed: state.Feeds.currentFeed,
+  feeds: state.Feeds.feeds
 });
 
 const mapDispatchToProps = dispatch => ({
-  loadPost: async id => {
-    const res = await loadPost(id);
-    res(dispatch);
-  },
+  loadPost: slug => loadPost(slug)(dispatch),
+  loadPostComments: slug => loadPostComments(slug)(dispatch)
 });
 
 PostDetailPage = connect(mapStateToProps, mapDispatchToProps)(PostDetailPage);

@@ -16,7 +16,7 @@ export const getUserDataFromLocalStorage = () => {
 
 // If we found a token in localStorage, use the accountUrl to get
 // the user's account.
-export const fetchAccount = async (accountUrl) => (
+export const fetchAccount = accountUrl => (
     async dispatch => {
         try {
             const response = await Api.get(accountUrl, false);
@@ -28,7 +28,7 @@ export const fetchAccount = async (accountUrl) => (
             // an error here likely means the token is invalid.
             localStorage.removeItem('token');
             localStorage.removeItem('accountUrl');
-            this.Api.removeToken();
+            Api.removeToken();
 
         }
 

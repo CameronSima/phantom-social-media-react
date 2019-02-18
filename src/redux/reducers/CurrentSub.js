@@ -12,7 +12,6 @@ const initialState = {
         username: ""
     },
     num_subscribers: 0,
-    posts: [],
     admins: []
 }
 

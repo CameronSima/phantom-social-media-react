@@ -12,7 +12,7 @@ class Api {
     })
 
     setToken(token) {
-        this.client.defaults.headers.common['Authorization'] = "Token " + token;
+       this.client.defaults.headers.common['Authorization'] = "Token " + token;
     }
 
     removeToken() {

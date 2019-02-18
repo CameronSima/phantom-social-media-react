@@ -41,8 +41,8 @@ export const SaveIcon = ({ postId, isSaved, save, unsave }) => (
     <Icon
         isActive={isSaved}
         child={saveSVG}
-        activateHandler={() => save(postId)}
-        deActivateHandler={() => unsave(postId)}
+        activateHandler={save}
+        deActivateHandler={unsave}
     />
 
 )

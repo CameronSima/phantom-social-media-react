@@ -4,17 +4,26 @@
 }
 
 .threadline {
-    display: block;
-    height: 100%;
-    width: 50%;
-    border-left: 2px solid rgb(237, 239, 241);
+    display: inline-block;
+    min-width: 1px;
+    width: 2px;
+    background:rgb(237, 239, 241);
+}
+
+.threadline.invisible {
+    opacity: 0;
 }
 
 .comment-container {
     margin: 5px;
     padding: 2px;
     margin-bottom: 10px;
-    width: 450px;
+    max-width: 450px;
+    display: inline-block;
+}
+
+.comment-row {
+    display: flex;
 }
 
 .comment-body > p {
@@ -28,4 +37,12 @@
 .comment-entry-box .comment-reply-button {
     margin: 8px;
     float: right;
+}
+
+@media (max-width: 1000px) {
+
+    .threadline {
+        width: 1px;
+    }
+
 }

@@ -50,7 +50,7 @@ const User = (state = initialState, action) => {
                 ...state,
                 account: {
                     ...state.account,
-                    saved_posts: state.account.saved_posts.filter(id => id !== action.payload)
+                    saved_posts: state.account.saved_posts.filter(id => id !== action.payload.id)
                 }
             }
 
@@ -59,7 +59,7 @@ const User = (state = initialState, action) => {
                 ...state,
                 account: {
                     ...state.account,
-                    saved_posts: state.account.saved_posts.concat(action.payload)
+                    saved_posts: state.account.saved_posts.concat(action.payload.id)
                 }
             }
 
