@@ -2,7 +2,7 @@ import React from 'react';
 import { connect } from 'react-redux';
 import '../Post.css';
 import CommentEntry from '../../Comment/CommentEntry';
-import { upvote, downvote } from '../../../redux/actions/Post';
+import { upvoteCurrentPost, downvote } from '../../../redux/actions/Post';
 import { PostDetails, LinkPreviewImage } from '../Post';
 import { VoteWidget } from '../../SharedWidgets/Toolbar';
 import { PostToolbar } from '../../SharedWidgets/Toolbar';
@@ -83,8 +83,7 @@ const mapStateToProps = state => ({
 
 const mapDispatchToProps = dispatch => ({
   upvoteHandler: async post => {
-    const thunk = await upvote(post);
-    thunk(dispatch);
+    upvoteCurrentPost(post)(dispatch);
   },
   downvoteHandler: async post => {
     const thunk = await downvote(post);

@@ -70,7 +70,7 @@ const CurrentPost = (state = initialState, action) => {
             }
 
         case UPVOTE_CURRENT_POST :
-            return upVote(action.payload);
+            return {...upVote(action.payload)};
         
         case DOWNVOTE_CURRENT_POST :
             return downVote(action.payload);

@@ -4,8 +4,13 @@ export const upVote = post => {
         post.user_downvoted = false;
     } else if (!post.user_upvoted) {
         post.score++;
+        post.user_upvoted = true;
+    } else if (post.user_downvoted) {
+        post.score--
+        post.user_upvoted = false;
     }
-    post.user_upvoted = true;
+    
+    return post;
 }
 
 export const downVote = post => {
