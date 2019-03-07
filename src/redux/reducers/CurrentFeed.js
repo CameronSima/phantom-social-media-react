@@ -23,13 +23,44 @@ const initialState = {
         created: "",
         posted_in: "",
         user_downvoted: false,
-        user_upvoted: false
+        user_upvoted: false,
+        user_saved: false
     }]
 }
 
 // All actions to the current view.
 const CurrentFeed = (state = initialState, action) => {
     switch (action.type) {
+
+        case UN_SAVE_POST :
+            return {
+                ...state,
+                results: state.results.map(post => {
+                    if (post.id === action.payload.id) {
+                        return {
+                            ...action.payload,
+                            user_saved: false
+                        }
+                    } else {
+                        return post;
+                    }
+                })
+            }
+
+        case SAVE_POST :
+            return {
+                ...state,
+                results: state.results.map(post => {
+                    if (post.id === action.payload.id) {
+                        return {
+                            ...action.payload,
+                            user_saved: true
+                        }
+                    } else {
+                        return post;
+                    }
+                })
+            }
 
         case LOAD_FEED_INTO_CURRENT_VIEW :
             return action.payload ? action.payload : state;

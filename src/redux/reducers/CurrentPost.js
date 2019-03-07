@@ -32,8 +32,8 @@ const initialState = {
     score: 0,
     title: "",
     url: "",
-    user_upvoted: false,
-    user_downvoted: false,
+    user_vote: 0,
+    user_saved: false,
     posted_in: {
         id: null,
         admins: [],

@@ -51,8 +51,8 @@ export const PostDetails = ({ posted_in = { title: "Home" }, author = { username
 let Post = post => {
     const {
         slug,
-        isDownvoted,
-        isUpvoted,
+        user_vote,
+        user_saved,
         link_preview_img,
         savePost,
         unsavePost,
@@ -84,6 +84,7 @@ let Post = post => {
 
                 <VoteWidget
                     score={score}
+                    user_vote={user_vote}
                     upvoteHandler={() => { upvote(post) }}
                     downVoteHandler={() => { downvote(post) }}
                 />
@@ -102,7 +103,7 @@ let Post = post => {
                 <PostToolbar
                     save={() => savePost(post)}
                     unsave={() => unsavePost(post)}
-                    isSaved={isSaved}
+                    isSaved={user_saved}
                     id={id}
                     num_comments={num_comments}
                 />

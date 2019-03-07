@@ -3,3 +3,12 @@
     margin: 0px 3px 0px 3px;
     cursor: pointer;
 }
+
+.vote-arrow { 
+    width: 16px;
+ }
+
+.vote-arrow.user-vote {
+    border-radius: 50%;
+    background: #37a2004d;
+}

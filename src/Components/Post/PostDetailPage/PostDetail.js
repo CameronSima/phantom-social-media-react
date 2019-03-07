@@ -70,6 +70,7 @@ let PostDetail = ({ post, dispatch, user, upvoteHandler, downvoteHandler }) => {
       </div>
       
       <CommentList 
+        post_slug={slug}
         user={user}
         dispatch={dispatch}
         comments={comments} />

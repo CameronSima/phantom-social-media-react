@@ -1,6 +1,7 @@
 import React, { PureComponent, Fragment } from 'react';
 import { CommentToolBar } from '../SharedWidgets/Toolbar';
 import { submitComment, loadDescendants, saveComment, unsaveComment, loadMoreComments } from '../../redux/actions/Comment';
+import { loadPostComments } from '../../redux/actions/Post';
 import { flatCommentsToTree } from '../../utils/CommentTree';
 import { loadingUtil } from '../../utils/helpers';
 import moment from 'moment';
@@ -19,7 +20,7 @@ const CommentDetails = ({ score, author, created }) => {
             </div>
             <div className="inline-text-item">
                 <div className="inline-text-item">
-                    <small>{score} {score === 1 ? 'point' : 'points'}</small>
+                    <small> {score} {score === 1 ? 'point' : 'points'}</small>
                 </div>
             </div>
             <div className="inline-text-item">
@@ -37,7 +38,7 @@ const CommentBody = ({ body_html }) => {
     )
 }
 
-const SortSelector = () => (
+const SortSelector = ({ slug, dispatch }) => (
     <span>
         Sort by
     <div className="dropdown" style={{ display: "inline-block", marginLeft: "10px" }}>
@@ -45,18 +46,20 @@ const SortSelector = () => (
                 Best
   </button>
             <div className="dropdown-menu" aria-labelledby="dropdownMenuButton">
-                <a className="dropdown-item" href="#">Hot</a>
-                <a className="dropdown-item" href="#">Top</a>
-                <a className="dropdown-item" href="#">New</a>
-                <a className="dropdown-item" href="#">Controversial</a>
+                <div onClick={()=> {loadPostComments(slug, 'best')(dispatch)}}>Best</div>
+                <div onClick={()=> {loadPostComments(slug, 'new')(dispatch)}}>New</div>
+                <div onClick={()=> {loadPostComments(slug, 'controversial')(dispatch)}}>Controversial</div>
+         
             </div>
         </div>
     </span>
 )
 
-const CommentToolbar = () => (
+const CommentToolbar = props => (
     <div className="comment-tools">
-        <SortSelector />
+        <SortSelector
+            { ...props } 
+        />
 
     </div>
 )
@@ -99,19 +102,10 @@ export class CommentList extends React.PureComponent {
     constructor(props) {
         super();
         this.state = {
-            showLoadMoreButton: props.comments.next !== null,
             loadMoreButtonText: 'Load More Comments'
         }
     }
 
-    componentWillReceiveProps(nextProps) {
-        if (this.state.showLoadMoreButton === false &&
-            nextProps.comments.next !== null) {
-            this.setState({
-                showLoadMoreButton: true
-            });
-        }
-    }
 
     loadMoreHandler = async () => {
         const { comments, dispatch } = this.props;
@@ -124,13 +118,18 @@ export class CommentList extends React.PureComponent {
     }
 
     render() {
-        const { user, comments, dispatch } = this.props;
-        const { results } = comments;
-
+        const { user, comments, dispatch, post_slug } = this.props;
+        const { results, next } = comments;
+        const showLoadMoreButton = next !== null;
         const nestedComments = flatCommentsToTree(results);
+
         return (
             <div className="comment-list-inner">
-                <CommentToolbar />
+                <CommentToolbar 
+                    dispatch={dispatch}
+                    slug={post_slug}
+
+                />
 
                 <RecurseComments
                     depth={0}
@@ -141,7 +140,7 @@ export class CommentList extends React.PureComponent {
 
                 <LoadMoreLink
                     text={this.state.loadMoreButtonText}
-                    shouldShow={this.state.showLoadMoreButton}
+                    shouldShow={showLoadMoreButton}
                     clickHandler={this.loadMoreHandler}
                 />
 

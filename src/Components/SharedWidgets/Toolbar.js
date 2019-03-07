@@ -30,34 +30,40 @@ export const MobileVoteWidget = ({ upvoteHandler, downVoteHandler, score = 0 }) 
     </div>
 )
 
-export const VoteWidget = ({ isDownvoted, isUpvoted, upvoteHandler, downVoteHandler, score }) => (
-    <div className="vote-widget d-none d-sm-inline"
-        style={{
-            display: "inline-block",
-            width: "30px",
-            float: "left",
-            cursor: "pointer"
+export const VoteWidget = ({ user_vote, upvoteHandler, downVoteHandler, score }) => {
 
-        }}>
-        <div onClick={isUpvoted ? ()=>{} : upvoteHandler}>
-            <img
-                style={{ width: "16px" }}
-                src={upVoteSVG} />
-        </div>
-        {score}
-        <div onClick={ isDownvoted ? ()=>{} : downVoteHandler}>
-            <img
-                style={{ width: "16px" }}
-                src={downVoteSVG} />
-        </div>
+    const upvoteStyle = user_vote === 1 ? 'vote-arrow user-vote' : 'vote-arrow';
+    const downvoteStyle = user_vote === -1 ? 'vote-arrow user-vote' : 'vote-arrow';
 
-    </div>
-)
+    return (
+        <div className="vote-widget d-none d-sm-inline"
+            style={{
+                display: "inline-block",
+                width: "30px",
+                float: "left",
+                cursor: "pointer"
+
+            }}>
+            <div onClick={upvoteHandler}>
+                <img
+                    className={upvoteStyle}
+                    src={upVoteSVG} />
+            </div>
+            {score}
+            <div onClick={downVoteHandler}>
+                <img
+                    className={downvoteStyle}
+                    src={downVoteSVG} />
+            </div>
+
+        </div>
+    )
+}
 
 export const CommentToolBar = props => {
     return (
         <ToolBar
-            { ...props }
+            {...props}
             commentIconText="Reply"
             commentIconHandler={props.commentIconHandler}
         />
@@ -95,8 +101,8 @@ export const ToolBar = props => {
                 <div className="inline-widget-item">
                     <SaveIcon
                         isSaved={isSaved}
-                        unsave={unsave}
                         save={save}
+                        unsave={unsave}
                         postId={id} />
                 </div>
                 <div className="inline-widget-item">
